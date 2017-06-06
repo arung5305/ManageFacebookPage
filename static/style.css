@@ -1,0 +1,116 @@
+body{
+	background-color: white;
+	font-family: Lucida Grande;
+}
+
+.reloaddiv{
+	text-align: center;
+	margin-top: 10px;
+}
+
+.fbloginbutton{
+	margin: 10px;
+	text-align: center;
+}
+
+.headCreate{
+	font-family: Lucida Grande;
+	background-color: #ededed;
+	margin-top: 0;
+}
+
+.createPost{
+	font-family: Lucida Grande;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	margin: auto;
+	max-width: 500px;
+	padding-top: 0;
+
+}
+
+.namePage{
+	border: 3px solid #3B5998;
+	border-radius: 3px;
+	padding: 5px;
+	max-width: 350px;
+	margin-left: 36%;
+	text-align: center;
+	margin-top: 10px;
+	color: white;
+	background-color: #3B5998;
+	font-size: 20px;
+}
+
+.publishbutton{
+	margin: 5px;
+}
+
+.createpostdiv{
+	font-family: Lucida Grande;
+	text-align: center;
+}
+
+.postgeneralpub{
+	font-family: Lucida Grande;
+	border-top: 5px solid #3B5998;
+	padding: 5px;
+	padding-top: 10px;
+	padding-left: 20px;
+	margin-bottom: 10px;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	border-radius: 3px;
+    transition: 0.3s;
+}
+
+.postgeneralunpub{
+	font-family: Lucida Grande;
+	border-top: 5px solid #f4ce42;
+	padding: 5px;
+	padding-top: 10px;
+	padding-left: 20px;
+	margin-bottom: 10px;
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	border-radius: 3px;
+    transition: 0.3s;
+}
+
+.card {
+    /* Add shadows to create the "card" effect */
+    
+}
+
+/* On mouse-over, add a deeper shadow */
+.postgeneralpub:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+
+.postgeneralunpub:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.posttime{
+	font-family: Lucida Grande;
+	font-size: 9px;
+	font-style: italic;
+}
+
+.posttext{
+	font-family: Lucida Grande;
+	font-weight: bold;
+	font-size: 19px;
+}
+
+.heading2{
+	font-family: Lucida Grande;
+	text-align: center;
+}
+
+.headingdisplay{
+	font-family: Lucida Grande;
+	text-align: center;
+	color: white;
+	background-color: #3B5998;
+}

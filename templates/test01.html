@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manage Facebook Pages</title>
+<link rel="stylesheet" type="text/css" href="static/style.css"/>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+<script>
+var published;
+var unpublished;
+window.fbAsyncInit = function() {
+   
+    FB.init({
+      appId      : '523467744490630',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.8'
+    });
+    FB.AppEvents.logPageView(); 
+
+
+    //FB.api('/me', function(response) {
+    //console.log(JSON.stringify(response));
+      //});
+    
+    FB.getLoginStatus(function(response) {
+  if (response.status === 'connected') {
+    // the user is logged in and has authenticated your
+    // app, and response.authResponse supplies
+    // the user's ID, a valid access token, a signed
+    // request, and the time the access token 
+    // and signed request each expire
+    afterlogin();
+    //var uid = response.authResponse.userID;
+    //var accessToken = response.authResponse.accessToken;
+  } else if (response.status === 'not_authorized') {
+    // the user is logged in to Facebook, 
+    // but has not authenticated your app
+  } else {
+    
+  }
+ });
+
+
+function afterlogin(){
+      
+      FB.api('/me/accounts', function(response) {
+        console.log(JSON.stringify(response));
+        pageID = response.data[0].id;
+        accesstoken = response.data[0].access_token;
+        $('#namePage').append(''+response.data[0].name+'');
+                    //console.log(JSON.stringify(response));
+
+
+            FB.api('/'+pageID+'/promotable_posts?is_published=true&access_token='+accesstoken,'GET',  function(response){
+                  published = response;
+                  //alert(published.data.length);
+              //console.log(JSON.stringify(response));
+              //console.log(published);
+
+              for(var i=0; i< published.data.length; i++){
+                  $('#publishedposts').append($('<div class="pagepost00 postgeneralpub"><p class="posttime">'+published.data[i].created_time+'</p><p class="posttext">'+published.data[i].message+'</p><p class="postviews" id="'+published.data[i].id+'">views</p></div>'));
+
+                  FB.api('/'+published.data[i].id+'/insights/post_engaged_users?access_token='+accesstoken,'GET',  function(response){
+                          $('#'+response.data[0].id.slice(0, response.data[0].id.indexOf('/'))).append('-'+response.data[0].values[0].value);
+                          //alert(response.data[0].id.slice(0, response.data[0].id.indexOf('/')));
+                      }
+                    )
+
+              }
+
+
+          });
+
+
+
+            FB.api('/'+pageID+'/promotable_posts?is_published=false&access_token='+accesstoken,'GET',  function(response){
+                  unpublished = response;
+              console.log(JSON.stringify(unpublished));
+
+              for(var i=0; i< unpublished.data.length; i++){
+                  $('#unpublishedposts').append($('<div class="unpubpost00 postgeneralunpub"><p class="posttime">'+unpublished.data[i].created_time+'</p><p class="posttext">'+unpublished.data[i].message+'</p></div>'));
+              }
+
+
+
+
+          });
+
+
+
+      });
+
+}
+
+
+
+
+
+
+
+
+
+
+    /* FB.api('/1525565864121335?fields=access_token','GET', function(response){
+          console.log(JSON.stringify(response));
+          FB.api('/1525565864121335/feed?access_token='+response.access_token,'GET',  function(response){
+            console.log(JSON.stringify(response));
+          });
+      });  */
+	
+  };
+
+
+function getLatest(){
+    //alert('000');
+    location.reload();
+
+
+}
+
+  var pageID;
+  var accesstoken;
+  /*function postfunc(){
+    //alert('yay');
+      FB.api('/me/accounts', function(response) {
+        console.log(JSON.stringify(response));
+        pageID = response.data[0].id;
+        FB.api('/'+pageID+'?fields=access_token='+response.access_token,'GET', function(response){
+            console.log(JSON.stringify(response));
+            FB.api('/'+pageID+'/feed','POST',{message: document.getElementById('entertext').value},  function(response){
+            console.log(JSON.stringify(response));
+          });
+        });
+  }
+}*/
+
+function checkForPublish(){
+  if(document.getElementById('publish').checked == true){
+    postUnpubfunc();
+  }
+  else if(document.getElementById('schedPublish').checked == true){
+    postScheduledfunc();
+  }
+    
+  else{
+    postfunc();
+  }
+}
+
+
+function postfunc(){
+
+
+FB.api('/me/accounts', function(response) {
+        console.log(JSON.stringify(response));
+        pageID = response.data[0].id;
+        accesstoken = response.data[0].access_token;
+            //console.log(JSON.stringify(response));
+            FB.api('/'+pageID+'/feed?access_token='+accesstoken,'POST',{message: document.getElementById('entertext').value},  function(response){
+            console.log(JSON.stringify(response));
+
+          });
+
+      });
+
+  
+  }
+
+
+  function postScheduledfunc(){
+
+
+  FB.api('/me/accounts', function(response) {
+        console.log(JSON.stringify(response));
+        pageID = response.data[0].id;
+        accesstoken = response.data[0].access_token;
+            //console.log(JSON.stringify(response));
+            FB.api('/'+pageID+'/feed?published=false&scheduled_publish_time='+document.getElementById('bdaytime').value+'&access_token='+accesstoken,'POST',{message: document.getElementById('entertext').value},  function(response){
+            console.log(JSON.stringify(response));
+            alert(document.getElementById('bdaytime').value);
+
+          });
+
+      });
+
+  
+  }
+
+function postUnpubfunc(){
+
+
+FB.api('/me/accounts', function(response) {
+        console.log(JSON.stringify(response));
+        pageID = response.data[0].id;
+        accesstoken = response.data[0].access_token;
+            //console.log(JSON.stringify(response));
+            FB.api('/'+pageID+'/feed?published=false&access_token='+accesstoken,'POST',{message: document.getElementById('entertext').value},  function(response){
+            console.log(JSON.stringify(response));
+
+          });
+
+      });
+
+
+}
+
+  
+  function checkLoginState(){
+  	//alert('logged in');
+	/* FB.api('/me/accounts', function(response) {
+    	console.log(JSON.stringify(response));
+    	pageID = response.data[0].id;
+    	FB.api('/'+pageID+'?fields=access_token','GET', function(response){
+    			console.log(JSON.stringify(response));
+    			FB.api('/'+pageID+'/feed','POST',{message: 'hello 007'},	function(response){
+    				console.log(JSON.stringify(response));
+  				});
+    	});
+    	
+	}); */
+	
+	/*FB.api('/1525565864121335?fields=access_token','GET', function(response){
+    			console.log(JSON.stringify(response));
+    			FB.api('/1525565864121335/feed?access_token='+response.access_token,'POST',{message: 'hello 013'},	function(response){
+    				console.log(JSON.stringify(response));
+  				});
+    	});  */
+    
+    
+  }
+
+   (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+</script>
+<div class="container maincontainer">
+
+ <!--  heading  -->
+      <div class="col-md-12 headingdisplay">
+            <h1>Manage Your Facebook Page!<h1>
+      </div>
+      <div class="fbloginbutton col-md-12">
+          <fb:login-button
+  scope="public_profile,email,publish_pages,manage_pages,publish_actions,pages_show_list,read_page_mailboxes,pages_manage_cta,pages_manage_instant_articles,read_insights"
+  onlogin="checkLoginState();">
+          </fb:login-button>
+      </div>
+
+     
+      <div class="col-md-12 input-group createPost">
+          <div class="headCreate col-md-12">Create posts on your page from here</div>
+          <div class="createpostdiv">
+              What's on your mind? 
+              <input type="text" name="entertext" id ="entertext" value="">
+              <input type="checkbox" id="publish" name="publish"> publish later
+              <input type="checkbox" id="schedPublish" name="schedPublish"> Scheduled
+              <button onclick="checkForPublish()" type="button" class="btn btn-default publishbutton">Post it!</button>
+
+          </div>
+          <div class="col-md-6" id="timepicker">
+            <input type="datetime-local" name="bdaytime" id="bdaytime"/>
+          </div>
+
+      </div>
+
+ <!--  create post  -->
+      <div class="col-md-12 reloaddiv">
+            <button onclick="getLatest()" type="button" class="btn btn-default">Get Latest Info</button>
+      </div>
+
+
+      <div class="col-md-12 namePage" id="namePage">
+
+      </div>
+
+ <!--  post lists  -->
+
+      <div class="col-md-12 belowfblogin container">
+          <div class="col-md-6 publishedposts" id="publishedposts">
+            <h2 class="heading2">Published Posts</h2>
+                
+          </div>
+          <div class="col-md-6 unpublishedposts" id="unpublishedposts">
+                <h2 class="heading2">Unpublished Posts</h2>
+                  
+          </div>
+      </div>
+ <!--    -->
+
+</div>
+
+
+</body>
+</html>
